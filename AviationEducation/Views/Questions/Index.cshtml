@@ -1,0 +1,224 @@
+﻿@model AviationEducation.Helpers.PaginatedList<AviationEducation.Models.Question>
+@{
+    ViewData["Title"] = "Questions";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a class="text-dark" asp-action="Create">Create New</a>
+</p>
+
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            <input type="text" name="SearchString" value="@ViewData["currentFilter"]" />
+            <input type="submit" value="Search" class="btn btn-warning" /> |
+            <a class="text-dark" asp-action="Index">Back to Full List</a>
+        </p>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a class="text-secondary" asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">@Html.DisplayNameFor(model => model[0].Question_Text)</a>
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].Option1)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].Option2)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].Option3)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].Answer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].Explanation)
+            </th>
+            <th>
+                <a class="text-secondary" asp-action="Index" asp-route-sortOrder="@ViewData["ModuleSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">@Html.DisplayNameFor(model => model[0].Module)</a>
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].Image)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Take(15))
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Question_Text)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Option1)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Option2)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Option3)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Answer)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Explanation)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Module)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Image)
+                </td>
+                <td>
+                    <a class="text-warning" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a class="text-warning" asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a class="text-warning" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-warning @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-warning @nextDisabled">
+    Next
+</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*@model AviationEducation.Models.QuestionCategoryViewModel
+
+    @{
+        ViewData["Title"] = "Index";
+    }
+
+    <h1>Index</h1>
+
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+
+    <form asp-controller="Questions" asp-action="Index" method="get">
+        <p>
+            <select asp-for="QuestionCategory" asp-items="Model.Categories">
+                <option value="">All</option>
+            </select>
+            Title: <input type="text" asp-for="SearchString">
+            <input type="submit" value="Filter" />
+        </p>
+    </form>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Questions[0].Question_Text)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Questions[0].Option1)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Questions[0].Option2)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Questions[0].Option3)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Questions[0].Answer)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Questions[0].Explanation)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Questions[0].Module)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Questions[0].Category)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Questions[0].Image)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Questions.Take(15))
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Question_Text)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Option1)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Option2)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Option3)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Answer)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Explanation)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Module)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Image)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>*@

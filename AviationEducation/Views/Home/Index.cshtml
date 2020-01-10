@@ -1,0 +1,130 @@
+﻿@model List<Question>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+@{
+    //Make first question random from the model list.
+    Random rnd = new Random();
+    int r = rnd.Next(Model.Count);
+    Question currentQuestion = Model.ElementAt(r);
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Random 10 question quiz. If you want to customize, please register</p>
+    <input type="button" class="btn btn-warning" id="start_button" onclick="Start(this)" value="Start Quiz" />
+    <div id="quiz_div" style="display: none">
+        <p id="question_text" class="lead font-weight-bold"></p>
+        <p id="option1" onclick="Option_clicked(this)"></p>
+        <p id="option2" onclick="Option_clicked(this)"></p>
+        <p id="option3" onclick="Option_clicked(this)"></p>
+        <input type="button" id="next_question_button" class="btn btn-warning" onclick="NextQuestion()" value="Next question" />
+        <p id="score" class="mt-2">Score: 0/0</p>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        //All questions from model
+        var questions = @Html.Raw(Json.Serialize(Model));
+
+        //Main variables and manipulated HTML elements
+        var score = 0
+        var total_questions_answered = 0
+        var current_question
+        var question_el = document.getElementById('question_text')
+        var option1_el = document.getElementById('option1')
+        var option2_el = document.getElementById('option2')
+        var option3_el = document.getElementById('option3')
+        var next_button_el = document.getElementById('next_question_button')
+
+        // ********************** Start button *********************
+
+        function Start(button) {
+            //Hide and appear needed HTML
+            document.getElementById('quiz_div').style.display = "inline";
+            button.style.display = "none";
+            next_button_el.disabled = true;
+            //Pick randonm question and put it into HTML
+            current_question = questions[Math.floor(Math.random() * questions.length)];
+            question_el.innerHTML = current_question['question_Text']
+            option1_el.innerHTML = current_question['option1']
+            option2_el.innerHTML = current_question['option2']
+            option3_el.innerHTML = current_question['option3']
+            //Re-start needed styles
+            for (let i of [option1_el, option2_el, option3_el]) {
+                i.style.background = "";
+                i.style.cursor = "pointer";
+                i.style.pointerEvents = "auto";
+            }
+            //Display score
+            document.getElementById('score').innerHTML = "Score: " + score + " /" + total_questions_answered
+            }
+
+        //********************** Option click event *********************
+
+            function Option_clicked(object) {
+            next_button_el.disabled = false
+            total_questions_answered += 1
+            //Check if clicked option is correct
+            if (object.innerHTML == current_question['answer']) {
+                score += 1
+                object.style.background = "#009933";
+            }
+            else {
+                for (let i of [option1_el, option2_el, option3_el]) {
+                    if (i.innerHTML == current_question.answer) {
+                        i.style.background = "#009933";
+                    }
+                }
+            }
+            for (let i of [option1_el, option2_el, option3_el]) {
+                i.style.cursor = "default";
+                i.style.pointerEvents = "none";
+            }
+            //Update score HTML
+            document.getElementById('score').innerHTML = "Score: " + score + " /" + total_questions_answered
+            //If it's last question buton text is Finish
+            if (total_questions_answered == 10) {
+                next_button_el.value = "Finish"
+            }
+        }
+
+        //********************** Next Question button *********************
+
+        function NextQuestion()
+        {
+            next_button_el.disabled = true;
+            //Restart html styles for questions
+            for (let i of [option1_el, option2_el, option3_el]) {
+                i.style.background = "";
+                i.style.pointerEvents = "auto";
+                i.style.cursor = "pointer";
+            }
+            //Pick new random question and update HTML
+            current_question = questions[Math.floor(Math.random() * questions.length)];
+            question_el.innerHTML = current_question['question_Text']
+            option1_el.innerHTML = current_question['option1']
+            option2_el.innerHTML = current_question['option2']
+            option3_el.innerHTML = current_question['option3']
+
+            if (total_questions_answered == 10) {
+                //restart data
+                score = 0
+                total_questions_answered = 0
+                //hide/appear needed HTML
+                document.getElementById('quiz_div').style.display = "none";
+                document.getElementById('start_button').style.display = "inline";
+            }
+        }
+    </script>
+
+}
+
+
+
